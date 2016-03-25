@@ -239,10 +239,22 @@ int WINAPI WinMain(
 		return -1;
 	}
 
-	// Greate! Both BAM.dll and Future Pinball.exe found. Run.
+	// Greate! Both BAM.dll and Future Pinball.exe found. 
+	// We are almost ready.
+	// We need know path to game dir
 	char game_dir[MAX_PATH];
 	strcpy_s(game_dir, game_exe);
 	*(strrchr(game_dir, '\\')) = 0;
+
+	// ... and bam dir
+	char bam_dir[MAX_PATH];
+	strcpy_s(bam_dir, bam_path);
+	*(strrchr(bam_dir, '\\')) = 0;
+
+	// Now set enviroment variable "path" to bam dir. 
+	// BAM needs own "renderingengine.dll" and current path will be set to game dir.
+	// So we set path to BAM dir to allow system find needed "renderingengine.dll"
+	SetEnvironmentVariableA("PATH", bam_dir);
 
 	PROCESS_INFORMATION process_info;
 	STARTUPINFOA startup_info;
