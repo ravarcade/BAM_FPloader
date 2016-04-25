@@ -246,15 +246,15 @@ int WINAPI WinMain(
 	strcpy_s(game_dir, game_exe);
 	*(strrchr(game_dir, '\\')) = 0;
 
-	// ... and bam dir
-	char bam_dir[MAX_PATH];
-	strcpy_s(bam_dir, bam_path);
-	*(strrchr(bam_dir, '\\')) = 0;
-
-	// Now set enviroment variable "path" to bam dir. 
+	// Now ADD bam_path to enviroment variable "%PATH%". 
 	// BAM needs own "renderingengine.dll" and current path will be set to game dir.
 	// So we set path to BAM dir to allow system find needed "renderingengine.dll"
-	SetEnvironmentVariableA("PATH", bam_dir);
+	char path[65535]; // eviroment variable "PATH" may be soo long.
+	strcpy_s(path, bam_path);
+	char *p = strrchr(path, '\\');
+	*p++ = ';';
+	GetEnvironmentVariableA("PATH", p , sizeof(path) - strlen(path) - 1);
+	SetEnvironmentVariableA("PATH", path);
 
 	PROCESS_INFORMATION process_info;
 	STARTUPINFOA startup_info;
